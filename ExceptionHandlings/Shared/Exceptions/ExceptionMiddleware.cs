@@ -22,7 +22,7 @@ namespace ExceptionHandlings.Shared.Exceptions
 
                 // Log successful requests as "Information"
 
-                Console.WriteLine("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
+                Console.WriteLine("HTTP {0} {1} responded {2} in {3} ms",
                     context.Request.Method, context.Request.Path, context.Response.StatusCode, sw.Elapsed.TotalMilliseconds);
             }
             catch (Exception ex)
@@ -34,8 +34,6 @@ namespace ExceptionHandlings.Shared.Exceptions
 
         public static Task HandleExceptionAsync(HttpContext context, Stopwatch sw, Exception ex)
         {
-            context.Response.ContentType = "application/json";
-
             if (ex is RecordNotFound or ParsingException)
             {
                 context.Response.StatusCode = 403;
@@ -50,8 +48,8 @@ namespace ExceptionHandlings.Shared.Exceptions
             };
 
             // Log exceptions as "Error" within the HandleExceptionAsync method
-            Console.WriteLine(ex.Message + " HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
-                context.Request.Method, context.Request.Path, context.Response.StatusCode, sw.Elapsed.TotalMilliseconds);
+            Console.Error.WriteLine("HTTP {0} {1} responded {2} in {3} ms with error {4}",
+                   context.Request.Method, context.Request.Path, context.Response.StatusCode, sw.Elapsed.TotalMilliseconds, ex.Message);
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
