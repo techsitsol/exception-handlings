@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Serilog;
 using System.Diagnostics;
 
 namespace ExceptionHandlings.Shared.Exceptions
@@ -22,7 +21,8 @@ namespace ExceptionHandlings.Shared.Exceptions
                 sw.Stop();
 
                 // Log successful requests as "Information"
-                Log.Information("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
+
+                Console.WriteLine("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
                     context.Request.Method, context.Request.Path, context.Response.StatusCode, sw.Elapsed.TotalMilliseconds);
             }
             catch (Exception ex)
@@ -50,7 +50,7 @@ namespace ExceptionHandlings.Shared.Exceptions
             };
 
             // Log exceptions as "Error" within the HandleExceptionAsync method
-            Log.Error(ex, "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
+            Console.WriteLine(ex.Message + " HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
                 context.Request.Method, context.Request.Path, context.Response.StatusCode, sw.Elapsed.TotalMilliseconds);
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
